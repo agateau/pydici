@@ -17,13 +17,15 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum, Q
 from django.views.decorators.cache import cache_page
 
+from wkhtmltopdf.views import PDFTemplateView
+
 from billing.models import ClientBill, SupplierBill
 from leads.models import Lead
 from people.models import Consultant
 from staffing.models import Timesheet, FinancialCondition, Staffing, Mission
 from crm.models import Company
 from core.utils import COLORS, sortedValues, nextMonth, previousMonth, to_int_or_round
-from core.decorator import pydici_non_public
+from core.decorator import pydici_non_public, PydiciNonPublicdMixin
 
 
 @pydici_non_public
@@ -119,6 +121,16 @@ def bill_file(request, bill_id=0, nature="client"):
         pass
 
     return response
+
+
+class BillPdf(PydiciNonPublicdMixin, PDFTemplateView):
+    filename = 'my_pdf.pdf'
+    template_name = 'billing/bill.html'
+    footer_template = 'billing/bill_footer.html'
+    cmd_options = {
+        'margin-top': 3,
+        # "header": "[page] / [toPage]"
+    }
 
 
 @pydici_non_public
