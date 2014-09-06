@@ -9,10 +9,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.encoding import smart_unicode
 from django.core.urlresolvers import reverse
+from django.forms.widgets import Textarea
 
 from django_select2 import AutoModelSelect2Field, AutoModelSelect2MultipleField
 from crispy_forms.layout import Layout, Div, Column
-from crispy_forms.bootstrap import AppendedText
+from crispy_forms.bootstrap import AppendedText, TabHolder, Tab
 
 from core.forms import PydiciSelect2Field
 from crm.models import Client, BusinessBroker, Supplier, MissionContact, ClientOrganisation, Contact, Company, AdministrativeContact
@@ -115,13 +116,20 @@ class ClientOrganisationForm(PydiciCrispyModelForm):
 class CompanyForm(PydiciCrispyModelForm):
     class Meta:
         model = Company
+        widgets = {"billing_street": Textarea(attrs={'cols': 17, 'rows': 2}), "street": Textarea(attrs={'cols': 17, 'rows': 2})}
 
     businessOwner = ConsultantChoices(label=_("Business Owner"))
 
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)
         self.helper.layout = Layout(Div(Column("name", "code", "businessOwner", "web", css_class="col-md-6"),
-                                        Column(css_class="col-md-6"),
+                                        Column(TabHolder(Tab(_("Main address"), "street",
+                                                             Div(Column("city", css_class="col-md-6"), Column("zipcode", css_class="col-md-6"), css_class="row"),
+                                                             "country"),
+                                                         Tab(_("Billing address"), "billing_street",
+                                                             Div(Column("billing_city", css_class="col-md-6"), Column("billing_zipcode", css_class="col-md-6"), css_class="row"),
+                                                             "billing_country"),),
+                                               css_class="col-md-6"),
                                         css_class="row"),
                                     self.submit)
 
