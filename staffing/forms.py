@@ -20,7 +20,7 @@ from django.db.models import Min
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Column, Field
 from crispy_forms.bootstrap import AppendedText
-from django_select2 import AutoModelSelect2Field, AutoModelSelect2MultipleField, Select2ChoiceField, AutoHeavySelect2Widget, Select2Widget
+from django_select2 import AutoModelSelect2Field, AutoModelSelect2MultipleField, Select2ChoiceField, AutoHeavySelect2Widget, Select2Widget, ModelSelect2Field
 from django.utils import formats
 
 
@@ -46,6 +46,14 @@ class MissionMChoices(PydiciSelect2Field, AutoModelSelect2MultipleField):
 
     def get_queryset(self):
         return Mission.objects.filter(active=True)
+
+
+class LeadMissionChoices(ModelSelect2Field):
+    def label_from_instance(self, mission):
+        if mission.description:
+            return "%s (%s)" % (mission.mission_id(), mission.description)
+        else:
+            return mission.mission_id()
 
 
 class StaffingDateChoices(Select2ChoiceField):
