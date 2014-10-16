@@ -9,6 +9,7 @@ from django.forms import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.forms.models import BaseInlineFormSet
+from django.forms.util import ValidationError
 
 from crispy_forms.layout import Layout, Div, Column
 from crispy_forms.bootstrap import AppendedText, TabHolder, Tab
@@ -42,6 +43,13 @@ class ClientBillForm(PydiciCrispyModelForm):
                                                   Tab(_("Dates"), Column("creation_date", "due_date", "payment_date", "previous_year_bill", css_class="col-md-6"),),
                                         css_class="row")))
 
+    def clean_amount(self):
+        if self.cleaned_data["amount"] or self.data["state"] == "0_DRAFT":
+            # Amount is defined or we are in early step, nothing to say
+            return self.cleaned_data["amount"]
+        else:
+            # Amount must be defined
+            raise ValidationError(_("Bill amount must be computed from bill detail or defined manually"))
 
 class SupplierBillForm(models.ModelForm):
     lead = LeadChoices(label=_("Lead"))
@@ -56,7 +64,7 @@ class BillDetailInlineFormset(BaseInlineFormSet):
     def add_fields(self, form, index):
         super(BillDetailInlineFormset, self).add_fields(form, index)
         form.fields["mission"] = LeadMissionChoices(queryset=Mission.objects.filter(lead=self.instance.lead))
-        form.fields["consultant"] = ConsultantChoices(label=_("Consultant"))
+        form.fields["consultant"] = ConsultantChoices(label=_("Consultant"), required=False)
 
 
 class BillDetailFormSetHelper(FormHelper):
