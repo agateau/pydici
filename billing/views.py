@@ -28,7 +28,7 @@ from staffing.models import Timesheet, FinancialCondition, Staffing, Mission
 from crm.models import Company
 from core.utils import COLORS, sortedValues, nextMonth, previousMonth, to_int_or_round
 from core.decorator import pydici_non_public, PydiciNonPublicdMixin
-from billing.forms import ClientBillForm, BillDetailFormSetHelper, BillDetailInlineFormset
+from billing.forms import ClientBillForm, BillDetailFormSetHelper, BillDetailInlineFormset, BillDetailForm
 from billing.utils import compute_bill
 
 
@@ -154,7 +154,7 @@ def client_bill(request, bill_id=None):
             raise Http404
     else:
         bill = None
-    BillDetailFormSet = inlineformset_factory(ClientBill, BillDetail, formset=BillDetailInlineFormset)
+    BillDetailFormSet = inlineformset_factory(ClientBill, BillDetail, formset=BillDetailInlineFormset, form=BillDetailForm)
     if request.POST:
         form = ClientBillForm(request.POST, request.FILES, instance=bill)
         if bill:
