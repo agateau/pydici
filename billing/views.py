@@ -21,14 +21,15 @@ from django.forms.models import inlineformset_factory
 
 from wkhtmltopdf.views import PDFTemplateView
 
-from billing.models import ClientBill, SupplierBill, BillDetail
+from billing.models import ClientBill, SupplierBill, BillDetail, BillExpense
 from leads.models import Lead
 from people.models import Consultant
 from staffing.models import Timesheet, FinancialCondition, Staffing, Mission
 from crm.models import Company
 from core.utils import COLORS, sortedValues, nextMonth, previousMonth, to_int_or_round
 from core.decorator import pydici_non_public, PydiciNonPublicdMixin
-from billing.forms import ClientBillForm, BillDetailFormSetHelper, BillDetailInlineFormset, BillDetailForm
+from billing.forms import ClientBillForm, BillDetailFormSetHelper, BillDetailInlineFormset, BillDetailForm, \
+    BillExpenseFormSetHelper, BillExpenseInlineFormset, BillExpenseForm
 from billing.utils import compute_bill
 
 
@@ -147,6 +148,7 @@ class BillPdf(PydiciNonPublicdMixin, PDFTemplateView):
 
 def client_bill(request, bill_id=None):
     billDetailFormSet = None
+    billExpenseFormSet = None
     if bill_id:
         try:
             bill = ClientBill.objects.get(id=bill_id)
@@ -155,14 +157,18 @@ def client_bill(request, bill_id=None):
     else:
         bill = None
     BillDetailFormSet = inlineformset_factory(ClientBill, BillDetail, formset=BillDetailInlineFormset, form=BillDetailForm)
+    BillExpenseFormSet = inlineformset_factory(ClientBill, BillExpense, formset=BillExpenseInlineFormset, form=BillExpenseForm)
     if request.POST:
         form = ClientBillForm(request.POST, request.FILES, instance=bill)
         if bill:
             billDetailFormSet = BillDetailFormSet(request.POST, instance=bill)
-        if form.is_valid() and (billDetailFormSet is None or billDetailFormSet.is_valid()):
+            billExpenseFormSet = BillExpenseFormSet(request.POST, instance=bill)
+        if form.is_valid() and (billDetailFormSet is None or billDetailFormSet.is_valid()) and (billExpenseFormSet is None or billExpenseFormSet.is_valid()):
             bill = form.save()
             if billDetailFormSet:
                 billDetailFormSet.save()
+            if billExpenseFormSet:
+                billExpenseFormSet.save()
             if bill.state == "0_DRAFT":
                 compute_bill(bill)
                 success_url = urlresolvers.reverse_lazy("client_bill", args=[bill.id, ])
@@ -173,11 +179,14 @@ def client_bill(request, bill_id=None):
         form = ClientBillForm(instance=bill)
         if bill:
             billDetailFormSet = BillDetailFormSet(instance=bill)
+            billExpenseFormSet = BillExpenseFormSet(instance=bill)
 
     return render(request, "billing/bill_form.html",
                   {"bill_form": form,
-                   "formset": billDetailFormSet,
-                   "formset_helper": BillDetailFormSetHelper(),
+                   "detail_formset": billDetailFormSet,
+                   "detail_formset_helper": BillDetailFormSetHelper(),
+                   "expense_formset": billExpenseFormSet,
+                   "expense_formset_helper": BillExpenseFormSetHelper(),
                    "user": request.user})
 
 

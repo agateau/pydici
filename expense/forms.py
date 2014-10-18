@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Column, Field
-from django_select2.fields import AutoModelSelect2MultipleField
+from django_select2.fields import AutoModelSelect2MultipleField, ModelSelect2Field
 from django_select2.views import NO_ERR_RESP
 import workflows.utils as wf
 
@@ -60,6 +60,11 @@ class PayableExpenseMChoices(ExpenseMChoices):
         res = [(getattr(obj, self.to_field_name), self.label_from_instance(obj), self.extra_data_from_instance(obj))
                for obj in res]
         return (NO_ERR_RESP, has_more, res,)
+
+
+class LeadExpenseChoices(ModelSelect2Field):
+    def label_from_instance(self, expense):
+        return u"%s - %s €" % (expense.description, expense.amount)
 
 
 class ExpenseForm(forms.ModelForm):
