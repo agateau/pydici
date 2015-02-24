@@ -11,3 +11,5 @@ django-debug-toolbar
 django-userswitch
 django-crispy-forms
 Django-Select2
+requests==2.5.2
+lxml==3.4.2
