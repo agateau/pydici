@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-12 12:07+0200\n"
-"PO-Revision-Date: 2014-10-12 12:06+0200\n"
-"Last-Translator: Sebastien Renard <renard@kde.org>\n"
+"POT-Creation-Date: 2015-03-10 17:38+0100\n"
+"PO-Revision-Date: 2015-03-10 17:39+0100\n"
+"Last-Translator: \n"
 "Language-Team: French <kde-francophone@kde.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Poedit 1.5.4\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: actionset/admin.py:34
@@ -50,11 +50,11 @@ msgstr "Quand une mission est archivée"
 msgid "When a consultant is created"
 msgstr "Quand un consultant est créé"
 
-#: actionset/models.py:27 actionset/models.py:48 crm/models.py:24
-#: crm/models.py:80 crm/models.py:306 expense/models.py:32 leads/models.py:54
+#: actionset/models.py:27 actionset/models.py:48 crm/models.py:26
+#: crm/models.py:82 crm/models.py:318 expense/models.py:32 leads/models.py:54
 #: leads/tables.py:19 leads/views.py:197 people/models.py:25
 #: people/models.py:215 staffing/tables.py:26
-#: templates/crm/clientcompany_detail.html:125
+#: templates/crm/clientcompany_detail.html:129
 #: templates/people/consultant.html:45
 #: templates/staffing/mission_contacts.html:12
 msgid "Name"
@@ -72,7 +72,7 @@ msgstr "Description"
 msgid "Trigger"
 msgstr "Déclencheur"
 
-#: actionset/models.py:30 crm/models.py:241 people/models.py:42
+#: actionset/models.py:30 crm/models.py:253 people/models.py:42
 #: people/models.py:218 staffing/models.py:46
 msgid "Active"
 msgstr "Active"
@@ -153,6 +153,10 @@ msgstr ""
 "L'utilisateur %s a un pointage incomplet mais il n'est pas possible de "
 "l'avertir car il n'a pas d'adresse de courriel."
 
+#: batch/incwo/core.py:362
+msgid "man-days: {}"
+msgstr "jour-hommes : {}"
+
 #: billing/admin.py:30 billing/admin.py:44
 msgid "Amounts"
 msgstr "Montants"
@@ -180,7 +184,7 @@ msgstr "Affaire"
 msgid "Expenses"
 msgstr "Notes de frais"
 
-#: billing/forms.py:29 crm/models.py:220
+#: billing/forms.py:29 crm/models.py:232
 #: templates/billing/_lead_billing.html:47
 msgid "Supplier"
 msgstr "Fournisseur"
@@ -313,7 +317,7 @@ msgid "%s (inactive)"
 msgstr "%s (inactif)"
 
 #: crm/forms.py:105 crm/forms.py:150 crm/forms.py:167 crm/forms.py:184
-#: crm/models.py:59 templates/crm/clientcompany_detail.html:126
+#: crm/models.py:61 templates/crm/clientcompany_detail.html:130
 #: templates/staffing/mission_contacts.html:13
 msgid "Company"
 msgstr "Société"
@@ -326,128 +330,128 @@ msgstr "Responsable business"
 msgid "Points of contact"
 msgstr "Points de contact"
 
-#: crm/models.py:25
+#: crm/models.py:27
 msgid "Code"
 msgstr "Code"
 
-#: crm/models.py:38 leads/models.py:76 people/models.py:40
+#: crm/models.py:40 leads/models.py:76 people/models.py:40
 #: people/models.py:217 staffing/models.py:51
 #: templates/leads/lead_detail.html:90 templates/staffing/mission.html:76
 msgid "Subsidiary"
 msgstr "Filiale"
 
-#: crm/models.py:39
+#: crm/models.py:41
 msgid "Subsidiaries"
 msgstr "Filiales"
 
-#: crm/models.py:45
+#: crm/models.py:47
 msgid "Business owner"
 msgstr "Responsable business"
 
-#: crm/models.py:60 crm/models.py:105 templates/core/search.html:44
+#: crm/models.py:62 crm/models.py:113 templates/core/search.html:44
 msgid "Companies"
 msgstr "Sociétés"
 
-#: crm/models.py:66
+#: crm/models.py:68
 msgid "Organization"
 msgstr "Organisation"
 
-#: crm/models.py:67
+#: crm/models.py:69
 msgid "Client company"
 msgstr "Entreprise"
 
-#: crm/models.py:74
+#: crm/models.py:76
 msgid "Client organisation"
 msgstr "Département"
 
-#: crm/models.py:82 people/models.py:220
-#: templates/crm/clientcompany_detail.html:129
+#: crm/models.py:84 people/models.py:220
+#: templates/crm/clientcompany_detail.html:133
 #: templates/staffing/mission_contacts.html:16
 msgid "Phone"
 msgstr "Téléphone"
 
-#: crm/models.py:83 templates/crm/clientcompany_detail.html:130
+#: crm/models.py:85 templates/crm/clientcompany_detail.html:134
 #: templates/staffing/mission_contacts.html:17
 msgid "Mobile phone"
 msgstr "Téléphone mobile"
 
-#: crm/models.py:84 templates/crm/clientcompany_detail.html:131
+#: crm/models.py:86 templates/crm/clientcompany_detail.html:135
 #: templates/staffing/mission_contacts.html:18
 msgid "Fax"
 msgstr "Fax"
 
-#: crm/models.py:85 crm/models.py:318
-#: templates/crm/clientcompany_detail.html:127
+#: crm/models.py:87 crm/models.py:330
+#: templates/crm/clientcompany_detail.html:131
 #: templates/staffing/mission_contacts.html:14
 msgid "Function"
 msgstr "Fonction"
 
-#: crm/models.py:100 crm/models.py:227 templates/leads/lead_mail.html:10
+#: crm/models.py:102 crm/models.py:239 templates/leads/lead_mail.html:10
 #: templates/leads/lead_mail.txt:11 templates/leads/lead_mail.txt.py:19
 #: templates/leads/mail.html:9 templates/leads/mail.html.py:11
 msgid "None"
 msgstr "Aucun(e)"
 
-#: crm/models.py:155
+#: crm/models.py:167
 #, python-format
 msgid "%s leads"
 msgstr "%s affaires"
 
-#: crm/models.py:186
+#: crm/models.py:198
 msgid "Broker company"
 msgstr "Société de l'apporteur"
 
-#: crm/models.py:187 crm/models.py:210 crm/models.py:238 crm/models.py:289
-#: crm/models.py:322 templates/leads/lead_detail.html:78
+#: crm/models.py:199 crm/models.py:222 crm/models.py:250 crm/models.py:301
+#: crm/models.py:334 templates/leads/lead_detail.html:78
 #: templates/people/subcontractor_detail.html:9
 msgid "Contact"
 msgstr "Contact"
 
-#: crm/models.py:203 leads/forms.py:46 leads/models.py:62
+#: crm/models.py:215 leads/forms.py:46 leads/models.py:62
 msgid "Business broker"
 msgstr "Apporteur d'affaires"
 
-#: crm/models.py:209
+#: crm/models.py:221
 msgid "Supplier company"
 msgstr "Société du fournisseur"
 
-#: crm/models.py:228
+#: crm/models.py:240
 msgid "Decreasing"
 msgstr "Décroissance"
 
-#: crm/models.py:229
+#: crm/models.py:241
 msgid "Flat"
 msgstr "Inchangée"
 
-#: crm/models.py:230
+#: crm/models.py:242
 msgid "Increasing"
 msgstr "Croissance"
 
-#: crm/models.py:233
+#: crm/models.py:245
 msgid "To restrain"
 msgstr "À restreindre"
 
-#: crm/models.py:234
+#: crm/models.py:246
 msgid "Standard"
 msgstr "Standard"
 
-#: crm/models.py:235
+#: crm/models.py:247
 msgid "Strategic"
 msgstr "Stratégique"
 
-#: crm/models.py:237
+#: crm/models.py:249
 msgid "Company : Organisation"
 msgstr "Société : département"
 
-#: crm/models.py:239
+#: crm/models.py:251
 msgid "Expectations"
 msgstr "Perspectives"
 
-#: crm/models.py:240
+#: crm/models.py:252
 msgid "Strategic alignment"
 msgstr "Alignement stratégique"
 
-#: crm/models.py:282 leads/models.py:68 leads/tables.py:18 leads/views.py:197
+#: crm/models.py:294 leads/models.py:68 leads/tables.py:18 leads/views.py:197
 #: templates/billing/bill_review.html:19 templates/billing/bill_review.html:67
 #: templates/billing/bill_review.html:115
 #: templates/billing/bill_review.html:164
@@ -457,35 +461,35 @@ msgstr "Alignement stratégique"
 msgid "Client"
 msgstr "Client"
 
-#: crm/models.py:288 crm/models.py:317 templates/crm/_contact_list.html:10
+#: crm/models.py:300 crm/models.py:329 templates/crm/_contact_list.html:10
 msgid "company"
 msgstr "société"
 
-#: crm/models.py:300
+#: crm/models.py:312
 msgid "Mission contact"
 msgstr "Contact mission"
 
-#: crm/models.py:319
+#: crm/models.py:331
 msgid "Phone Switchboard"
 msgstr "Standard téléphonique"
 
-#: crm/models.py:320
+#: crm/models.py:332
 msgid "Generic email"
 msgstr "Courriel générique"
 
-#: crm/models.py:321
+#: crm/models.py:333
 msgid "Generic fax"
 msgstr "Fax générique"
 
-#: crm/models.py:354
+#: crm/models.py:366
 msgid "Administrative contact"
 msgstr "Contact administratif"
 
-#: crm/views.py:60
+#: crm/views.py:62
 msgid "Contact removed successfully"
 msgstr "Contact supprimé avec succès "
 
-#: crm/views.py:265
+#: crm/views.py:271
 msgid "Others"
 msgstr "Autres"
 
@@ -1389,7 +1393,7 @@ msgstr "Montant réalisé (€)"
 
 #: templates/billing/bill_review.html:212 templates/core/index.html:25
 #: templates/core/index.html.py:50 templates/core/index.html:74
-#: templates/core/index.html.py:98 templates/crm/clientcompany_detail.html:89
+#: templates/core/index.html.py:98 templates/crm/clientcompany_detail.html:93
 #: templates/leads/lead_detail.html:93 templates/leads/lead_detail.html:133
 #: templates/leads/lead_mail.html:8 templates/leads/lead_mail.html.py:12
 #: templates/leads/lead_mail.txt:9 templates/leads/lead_mail.txt.py:13
@@ -1525,7 +1529,7 @@ msgstr "Rechercher :"
 
 #: templates/core/_pydici_menu.html:19 templates/core/search.html:53
 #: templates/crm/clientcompany_detail.html:25
-#: templates/crm/clientcompany_detail.html:65
+#: templates/crm/clientcompany_detail.html:69
 msgid "Leads"
 msgstr "Affaires"
 
@@ -1576,7 +1580,7 @@ msgid "New business broker"
 msgstr "Nouvel apporteur d'affaires"
 
 #: templates/core/_pydici_menu.html:48
-#: templates/crm/clientcompany_detail.html:155
+#: templates/crm/clientcompany_detail.html:159
 msgid "New administrative contact"
 msgstr "Nouveau contact administratif"
 
@@ -1875,36 +1879,36 @@ msgstr "Chiffre d'affaire facturé : "
 msgid "Current active missions"
 msgstr "Missions en cours"
 
-#: templates/crm/clientcompany_detail.html:86
+#: templates/crm/clientcompany_detail.html:90
 msgid "Business owner for this company:"
 msgstr "Responsable business pour cette société : "
 
-#: templates/crm/clientcompany_detail.html:92
+#: templates/crm/clientcompany_detail.html:96
 msgid "Consultants that work for this company:"
 msgstr "Les consultants qui ont travaillé pour cette société :"
 
-#: templates/crm/clientcompany_detail.html:103
+#: templates/crm/clientcompany_detail.html:107
 msgid "Business contacts"
 msgstr "Contacts business"
 
-#: templates/crm/clientcompany_detail.html:111
+#: templates/crm/clientcompany_detail.html:115
 msgid "Mission contacts"
 msgstr "Contacts mission"
 
-#: templates/crm/clientcompany_detail.html:120
+#: templates/crm/clientcompany_detail.html:124
 msgid "Administrative contacts"
 msgstr "Contacts administratifs"
 
-#: templates/crm/clientcompany_detail.html:128
+#: templates/crm/clientcompany_detail.html:132
 #: templates/staffing/mission_contacts.html:15
 msgid "Email"
 msgstr "Courriel"
 
-#: templates/crm/clientcompany_detail.html:159
+#: templates/crm/clientcompany_detail.html:163
 msgid "Used rates for this company"
 msgstr "Les TJMs pratiqués avec cette société"
 
-#: templates/crm/clientcompany_detail.html:166
+#: templates/crm/clientcompany_detail.html:170
 msgid "No rate defined"
 msgstr "Aucun TJM défini"
 
@@ -2337,8 +2341,8 @@ msgstr ""
 #: templates/people/consultant_detail.html:25
 #, python-format
 msgid ""
-"<a href=\"%(consultant_url)s#tab-timesheet\">Timesheet</a> is <b>%(days)s day"
-"(s)</b> late"
+"<a href=\"%(consultant_url)s#tab-timesheet\">Timesheet</a> is <b>%(days)s "
+"day(s)</b> late"
 msgstr ""
 "<a href=\"%(consultant_url)s#tab-timesheet\">Feuille de temps</a> en retard "
 "de <b>%(days)s jour(s)</b>"
