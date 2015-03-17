@@ -5,6 +5,7 @@ Staffing form setup
 @license: AGPL v3 or newer (http://www.gnu.org/licenses/agpl-3.0.html)
 """
 import time
+import types
 
 from datetime import timedelta, date
 from decimal import Decimal
@@ -306,6 +307,8 @@ class KeyboardTimesheetField(forms.Field):
         self.widget.attrs.setdefault("class", "timesheet-keyboard")
 
     def prepare_value(self, day_percent):
+        if isinstance(day_percent, types.StringTypes):
+            return day_percent
         if day_percent is None:
             hours = 0
             minutes = 0
