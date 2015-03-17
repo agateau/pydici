@@ -37,3 +37,7 @@ DOCUMENT_PROJECT_LEAD_DIR = u"{deal_id}_{name}"
 DOCUMENT_PROJECT_BUSINESS_DIR = u"commerce"
 DOCUMENT_PROJECT_DELIVERY_DIR = u"delivery"
 DOCUMENT_PROJECT_INPUT_DIR = u"input"
+
+# can be "cycle" or "keyboard"
+TIMESHEET_INPUT_METHOD = "cycle"
+TIMESHEET_DAY_DURATION = 7
