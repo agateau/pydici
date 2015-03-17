@@ -321,7 +321,10 @@ class KeyboardTimesheetField(forms.Field):
     def to_python(self, value):
         if not value and not self.required:
             return 0
-        value_struct = time.strptime(value, '%H:%M')
+        try:
+            value_struct = time.strptime(value, '%H:%M')
+        except ValueError:
+            raise forms.ValidationError('Invalid time string {}'.format(value))
         duration = value_struct[3] + value_struct[4] / 60.0
         return duration / float(settings.TIMESHEET_DAY_DURATION)
 
