@@ -9,6 +9,7 @@ Test cases
 from django.test import TestCase
 from django.core import urlresolvers
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 
 # Third party modules
 import workflows.utils as wf
@@ -16,11 +17,12 @@ import permissions.utils as perm
 from workflows.models import Transition
 
 # Pydici modules
-from core.utils import monthWeekNumber, previousWeek, nextWeek
+from core.utils import monthWeekNumber, previousWeek, nextWeek, nextMonth, previousMonth
 from leads.models import Lead
-from people.models import Consultant, ConsultantProfile
-from crm.models import Client, Subsidiary, BusinessBroker
-from staffing.models import Mission
+from people.models import Consultant, ConsultantProfile, RateObjective
+from crm.models import Client, Subsidiary, BusinessBroker, Supplier
+from staffing.models import Mission, Staffing, Timesheet, FinancialCondition
+from billing.models import SupplierBill, ClientBill
 from expense.models import Expense, ExpenseCategory, ExpensePayment
 from expense.default_workflows import install_expense_workflow
 import pydici.settings
@@ -213,6 +215,72 @@ class UtilsTest(TestCase):
             self.assertEqual(firstDay, nextWeek(weekDay))
 
 
+class StaffingViewsTest(TestCase):
+    fixtures = ["auth.json", "people.json", "crm.json",
+                "leads.json", "staffing.json", "billing.json"]
+
+    def test_mission_timesheet(self):
+        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
+        current_month = date.today().replace(day=1)
+        next_month = nextMonth(current_month)
+        previous_month = previousMonth(current_month)
+        lead = Lead.objects.get(id=1)
+        c1 = Consultant.objects.get(id=1)
+        c2 = Consultant.objects.get(id=2)
+        mission = Mission(lead=lead, subsidiary_id=1, billing_mode="TIME_SPENT", nature="PROD", probability=100)
+        mission.save()
+        response = self.client.get(urlresolvers.reverse("staffing.views.mission_timesheet", args=[mission.id,]), follow=True, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["margin"], 0)
+        self.assertEqual(response.context["objective_margin_total"], 0)
+        self.assertEqual(response.context["forecasted_unused"], 0)
+        self.assertEqual(response.context["current_unused"], 0)
+        self.assertEqual(response.context["avg_daily_rate"], 0)
+        # Add some forecast
+        Staffing(mission=mission, staffing_date=current_month, consultant=c1, charge=15).save()
+        Staffing(mission=mission, staffing_date=current_month, consultant=c2, charge=10).save()
+        Staffing(mission=mission, staffing_date=next_month, consultant=c1, charge=8).save()
+        Staffing(mission=mission, staffing_date=next_month, consultant=c2, charge=6).save()
+        # Add some timesheet - we fake with all charge on the first day
+        Timesheet(mission=mission, working_date=previous_month, consultant=c1, charge=8).save()
+        Timesheet(mission=mission, working_date=previous_month, consultant=c2, charge=5).save()
+        Timesheet(mission=mission, working_date=current_month, consultant=c1, charge=11).save()
+        Timesheet(mission=mission, working_date=current_month, consultant=c2, charge=9).save()
+        # Define objective rates for consultants
+        RateObjective(consultant=c1, start_date=previous_month, daily_rate=700).save()
+        RateObjective(consultant=c2, start_date=previous_month, daily_rate=1050).save()
+        # Add financial conditions for this mission
+        FinancialCondition(consultant=c1, mission=mission, daily_rate=800).save()
+        FinancialCondition(consultant=c2, mission=mission, daily_rate=1100).save()
+        # Define mission price
+        mission.price = 50
+        mission.save()
+        # Let's test if computation are rights
+        response = self.client.get(urlresolvers.reverse("staffing.views.mission_timesheet", args=[mission.id,]), follow=True, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["margin"], 0)  # That's because we are in fixed price
+        self.assertEqual(response.context["objective_margin_total"], 2600)
+        self.assertEqual(response.context["forecasted_unused"], 2.1)
+        self.assertEqual(response.context["current_unused"], 19.4)
+        # Switch to fixed price mission
+        mission.billing_mode = "FIXED_PRICE"
+        mission.save()
+        response = self.client.get(urlresolvers.reverse("staffing.views.mission_timesheet", args=[mission.id,]), follow=True, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["margin"], 2.1)
+        self.assertEqual(response.context["objective_margin_total"], 2600)
+        self.assertEqual(response.context["forecasted_unused"], 0)  # Unused is margin in fixes price :-)
+        self.assertEqual(response.context["current_unused"], 0)  # idem
+        # Check mission data main table
+        data = response.context["mission_data"]
+        self.assertListEqual(data[0], [c2, [5, 9, 14, 15.4], [1, 6, 7, 7.7], [21, 23.1]])
+        self.assertListEqual(data[1], [c1, [8, 11, 19, 15.2], [4, 8, 12, 9.6], [31, 24.8]])
+        self.assertListEqual(data[2], [None, [13, 20, 33, 30.6], [5, 14, 19, 17.3], [52, 47.9],
+                                       [11.9, 18.7], [4.3, 13],
+                                       [915.4, 935, 927.3], [860, 928.6, 910.5]])
+
+
+
 class CrmModelTest(TestCase):
     fixtures = ["auth.json", "people.json", "crm.json",
                 "leads.json", "staffing.json", "billing.json"]
@@ -374,6 +442,53 @@ class StaffingModelTest(TestCase):
         mission.active = False
         mission.save()
         self.assertEqual(mission.staffing_set.count(), 0)
+
+
+class BillingModelTest(TestCase):
+    """Test Billing application model"""
+    fixtures = ["auth.json", "people.json", "crm.json",
+                "leads.json", "staffing.json", "billing.json"]
+
+    def test_save_supplier_bill(self):
+        lead = Lead.objects.get(id=1)
+        supplier = Supplier.objects.get(id=1)
+        bill = SupplierBill()
+        self.assertEqual(bill.state, "1_RECEIVED")
+        self.assertRaises(IntegrityError, bill.save)  # No lead, no supplier and no amount
+        bill.lead = lead
+        bill.supplier = supplier
+        self.assertRaises(IntegrityError, bill.save)  # Still no amount
+        bill.amount = 100
+        self.assertIsNone(bill.amount_with_vat)
+        bill.save()
+        self.assertIsNone(bill.amount_with_vat)  # No auto computation of VAT for supplier bill
+        self.assertEqual(bill.payment_delay(), 0)
+        self.assertEqual(bill.payment_wait(), -30)
+        bill.payment_date = date.today()
+        bill.save()
+        self.assertEqual(bill.state, "2_PAID")
+
+
+    def test_save_client_bill(self):
+        lead = Lead.objects.get(id=1)
+        client = Client.objects.get(id=1)
+        bill = ClientBill()
+        self.assertEqual(bill.state, "1_SENT")
+        self.assertRaises(IntegrityError, bill.save)  # No lead, no client and no amount
+        bill.lead = lead
+        bill.client = client
+        self.assertRaises(IntegrityError, bill.save)  # Still no amount
+        bill.amount = 100
+        self.assertIsNone(bill.amount_with_vat)
+        bill.save()
+        self.assertIsNotNone(bill.amount_with_vat)
+        self.assertEqual(bill.state, "1_SENT")
+        self.assertEqual(bill.payment_delay(), 0)
+        self.assertEqual(bill.payment_wait(), -30)
+        bill.payment_date = date.today()
+        bill.save()
+        self.assertEqual(bill.state, "2_PAID")
+
 
 
 class WorkflowTest(TestCase):

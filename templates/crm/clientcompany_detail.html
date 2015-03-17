@@ -51,50 +51,62 @@
         <h2>{% trans "Sales with this client: "%} {{ company.sales|floatformat:-1 }} k€</h2>
 
         <h2>{% trans "Current active missions" %}</h2>
-        <ul>
+        <div class="row">
+        <ul class="list-group">
         {% for clientorganisation in company.clientorganisation_set.all %}
             {% for client in clientorganisation.client_set.all %}
                 {% with client.getActiveMissions as activeMissions %}
                     {% if activeMissions %}
-                        <li>{{ client }} <ul>
-                        {% for mission in activeMissions %}
-                            <li><a href="{% url 'staffing.views.mission_home' mission.id %}">{{ mission.short_name }}</a></li>
-                        {% endfor %}
-                        </ul></li>
+                        <div class="col-sm-12 col-md-6 col-lg-4" style="margin-top:20px">
+                        <li class="list-group-item disabled"><a href="{% url 'client_change' client.id %}" class='pydici-tooltip' title="{% trans 'click to edit...' %}">{{ client }}</a> {% include "crm/_client_picto.html" %}</li>
+
+                            {% for mission in activeMissions %}
+                                <li class="list-group-item"><a href="{% url 'staffing.views.mission_home' mission.id %}">{{ mission.short_name }}</a></li>
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 {% endwith %}
             {% endfor %}
         {% endfor %}
         </ul>
+        </div>
         <h2>{% trans "Leads" %}</h2>
-        <ul>
-        {% for lead in leads %}
-            {% ifchanged lead.client %}
-                <h2>
-                    {% if lead.client.contact %}
-                        {{ lead.client.organisation }} (
-                        <a rel=external href="{% url 'contact_detail' lead.client.contact.id %}">{{ lead.client.contact }}</a>)
-                    {% else %}
-                        {{ lead.client }}
+        <div class="row">
+        <ul class="list-group">
+        {% regroup leads by client as client_list %}
+        {% for client in client_list %}
+            <div class="col-sm-12 col-md-6 col-lg-4" style="margin-top:20px">
+                {% for lead in client.list %}
+                    {% if forloop.counter0 == 0 or forloop.counter0 == 5 or forloop.counter0 == 10 or forloop.counter0 == 15 or forloop.counter0 == 20 or forloop.counter0 == 25 or forloop.counter0 == 30 or forloop.counter0 == 35 %}
+                        {% if forloop.counter0 > 0 %}
+                            </div><div class="col-sm-12 col-md-6 col-lg-4" style="margin-top:20px">
+                        {% endif %}
+                        <li class="list-group-item disabled"><a href="{% url 'client_change' client.grouper.id %}" class='pydici-tooltip' title="{% trans 'click to edit...' %}">{{ client.grouper }}</a>
+                        {% with client.grouper as client %}{% include "crm/_client_picto.html" %}{% endwith %}
+
+                        {% if forloop.counter0 > 0 %}
+                            ...
+                        {% endif %}
+                        </li>
                     {% endif %}
-                </h2>
-            {% endifchanged %}
-        
-            <li><a href="{% url 'leads.views.detail' lead.id %}">{{ lead }} ({{ lead.deal_id }})</a> - {{ lead.start_date|date:"F Y" }} ({{ lead.get_state_display }})</li>
+                    <li class="list-group-item"><a href="{% url 'leads.views.detail' lead.id %}">{{ lead }} ({{ lead.deal_id }})</a> - {{ lead.start_date|date:"F Y" }} ({{ lead.get_state_display }})</li>
+                {% endfor %}
+            </div>
         {% endfor %}
         </ul>
+        </div>
     </div>
     
     <div id="tab-consultants" class="tab-pane fade">
     {% if consultants %}
         <h2>{% trans "Business owner for this company:" %}</h2>
-            <ul data-role="listview" data-inset="true" data-theme="c">
+            <ul>
                 <li>{% if company.businessOwner %}<a href="{% url 'people.views.consultant_home' company.businessOwner.id %}">{{ company.businessOwner.full_name }}</a>
                     {% else %} <a href="{% url 'crm.views.company' company.id %}">{% trans "To be defined" %}</a>
                     {% endif %}</li>
             </ul>
         <h2>{% trans "Consultants that work for this company:" %}</h2>
-            <ul data-role="listview" data-inset="true" data-theme="c">
+            <ul>
             {% for consultant in consultants %}
                 <li><a href="{% url 'people.views.consultant_home' consultant.id %}">{{ consultant.full_name }}</a></li>
             {% endfor %}

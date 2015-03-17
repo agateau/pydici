@@ -24,6 +24,7 @@ from django.contrib.auth.decorators import permission_required
 from crm.models import Company, Client, ClientOrganisation, Contact, AdministrativeContact, MissionContact, BusinessBroker
 from crm.forms import ClientForm, ClientOrganisationForm, CompanyForm, ContactForm, MissionContactForm, AdministrativeContactForm, BusinessBrokerForm
 from staffing.models import Timesheet
+from people.models import Consultant
 from leads.models import Lead
 from core.decorator import pydici_non_public, PydiciNonPublicdMixin
 from core.utils import sortedValues, previousMonth, COLORS
@@ -44,6 +45,13 @@ class ContactCreate(PydiciNonPublicdMixin, ContactReturnToMixin, CreateView):
     model = Contact
     template_name = "core/form.html"
     form_class = ContactForm
+
+    def get_initial(self):
+        try:
+            defaultPointOfContact = Consultant.objects.get(trigramme=self.request.user.username.upper())
+            return { 'contact_points': [defaultPointOfContact,]}
+        except Consultant.DoesNotExist:
+            return {}
 
 
 class ContactUpdate(PydiciNonPublicdMixin, ContactReturnToMixin, UpdateView):
@@ -217,11 +225,11 @@ def company_detail(request, company_id):
     company = Company.objects.get(id=company_id)
 
     # Find leads of this company
-    leads = Lead.objects.filter(client__organisation__company=company).select_related()
+    leads = Lead.objects.filter(client__organisation__company=company).select_related().prefetch_related("clientbill_set")
     leads = leads.order_by("client", "state", "start_date")
 
     # Find consultant that work (=declare timesheet) for this company
-    consultants = [s.consultant for s in Timesheet.objects.filter(mission__lead__client__organisation__company=company).select_related()]
+    consultants = [s.consultant for s in Timesheet.objects.filter(mission__lead__client__organisation__company=company).select_related("consultant")]
     consultants = list(set(consultants))  # Distinct
 
     companies = Company.objects.filter(clientorganisation__client__id__isnull=False).distinct()
@@ -233,7 +241,7 @@ def company_detail(request, company_id):
                    "business_contacts": Contact.objects.filter(client__organisation__company=company).distinct(),
                    "mission_contacts": Contact.objects.filter(missioncontact__company=company).distinct(),
                    "administrative_contacts": AdministrativeContact.objects.filter(company=company),
-                   "clients": Client.objects.filter(organisation__company=company),
+                   "clients": Client.objects.filter(organisation__company=company).select_related(),
                    "companies": companies})
 
 
@@ -295,7 +303,8 @@ def graph_company_business_activity_jqp(request, company_id):
     @todo: extend this graph to multiple companies"""
     graph_data = []
     billsData = dict()
-    allLeadsData = dict()
+    lostLeadsData = dict()
+    currentLeadsData = dict()
     wonLeadsData = dict()
     minDate = date.today()
     company = Company.objects.get(id=company_id)
@@ -309,17 +318,16 @@ def graph_company_business_activity_jqp(request, company_id):
 
     for lead in Lead.objects.filter(client__organisation__company=company):
         kdate = lead.creation_date.date().replace(day=1)
+        for data in (lostLeadsData, wonLeadsData, currentLeadsData, billsData):
+            data[kdate] = data.get(kdate, 0)  # Default to 0 to avoid stacking weirdness in graph
         if lead.state == "WON":
-            datas = (allLeadsData, wonLeadsData)
+            wonLeadsData[kdate] += 1
+        elif lead.state in ("LOST", "FORGIVEN"):
+            lostLeadsData[kdate] += 1
         else:
-            datas = (allLeadsData,)
-        for data in datas:
-            if kdate in data:
-                data[kdate] += 1
-            else:
-                data[kdate] = 1
+            currentLeadsData[kdate] += 1
 
-    for data in (billsData, allLeadsData, wonLeadsData):
+    for data in (billsData, lostLeadsData, wonLeadsData, currentLeadsData):
         kdates = data.keys()
         kdates.sort()
         isoKdates = [a.isoformat() for a in kdates]  # List of date as string in ISO format
