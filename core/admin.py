@@ -8,6 +8,8 @@ Admin module for pydici core module
 from django.contrib import admin
 from django.utils.encoding import iri_to_uri
 
+from core.models import GroupFeature
+
 
 class ReturnToAppAdmin(admin.ModelAdmin):
     """Generic admin class that enable to return to custom page instead
@@ -26,3 +28,10 @@ class ReturnToAppAdmin(admin.ModelAdmin):
         if request.GET.get('return_to', False):
             result['Location'] = iri_to_uri(request.GET['return_to'])
         return result
+
+
+class GroupFeatureAdmin(ReturnToAppAdmin):
+    pass
+
+
+admin.site.register(GroupFeature, GroupFeatureAdmin)

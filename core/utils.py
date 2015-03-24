@@ -25,6 +25,9 @@ from django.contrib.auth.models import Group
 
 import pydici.settings
 
+from core.models import GroupFeature
+
+
 # Graph colors
 COLORS = ["#05467A", "#FF9900", "#A7111B", "#DAEBFF", "#FFE32C", "#AAFF86", "#D972FF", "#FF8D8F", "#6BE7FF", "#FF1616"]
 
@@ -377,8 +380,8 @@ def _get_user_features(user):
     key = "core._get_user_features_" + user.username
     res = cache.get(key)
     if res is None:
-        group_names = [x.name for x in user.groups.filter(name__startswith="feature/")]
-        res = set([x.split("/")[1] for x in group_names])
+        features = [x.feature for x in GroupFeature.objects.filter(group__user=user)]
+        res = set(features)
         cache.set(key, res, 3)
     return res
 

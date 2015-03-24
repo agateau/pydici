@@ -18,6 +18,7 @@ from workflows.models import Transition
 
 # Pydici modules
 from core.utils import monthWeekNumber, previousWeek, nextWeek, nextMonth, previousMonth
+from core.models import GroupFeature, FEATURES
 from leads.models import Lead
 from people.models import Consultant, ConsultantProfile, RateObjective
 from crm.models import Client, Subsidiary, BusinessBroker, Supplier
@@ -119,7 +120,7 @@ class SimpleTest(TestCase):
                 "leads.json", "staffing.json", "billing.json"]
 
     def setUp(self):
-        create_feature_groups()
+        setup_test_user_features()
 
     def test_basic_page(self):
         self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
@@ -331,7 +332,7 @@ class LeadModelTest(TestCase):
                 "leads.json", "staffing.json", "billing.json"]
 
     def setUp(self):
-        create_feature_groups()
+        setup_test_user_features()
         if not os.path.exists(pydici.settings.DOCUMENT_PROJECT_PATH):
             os.makedirs(pydici.settings.DOCUMENT_PROJECT_PATH)
 
@@ -582,18 +583,13 @@ def create_lead():
     return lead
 
 
-def create_feature_groups():
-    group_names = (
-        "feature/leads",
-        "feature/mass_staffing",
-        "feature/3rdparties",
-        "feature/management",
-        "feature/reports",
-        "feature/search",
-    )
+def setup_test_user_features():
+    admin_group = Group(name="admin")
+    admin_group.save()
+
+    for name in FEATURES:
+        GroupFeature(feature=name, group=admin_group).save()
+
     test_user = User.objects.get(username=TEST_USERNAME)
-    for name in group_names:
-        group = Group(name=name)
-        group.save()
-        test_user.groups.add(group)
+    test_user.groups.add(admin_group)
     test_user.save()
