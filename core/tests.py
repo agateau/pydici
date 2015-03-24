@@ -8,7 +8,7 @@ Test cases
 # Python/Django test modules
 from django.test import TestCase
 from django.core import urlresolvers
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.db import IntegrityError
 
 # Third party modules
@@ -117,6 +117,9 @@ PYDICI_PAGES = ("/",
 class SimpleTest(TestCase):
     fixtures = ["auth.json", "people.json", "crm.json",
                 "leads.json", "staffing.json", "billing.json"]
+
+    def setUp(self):
+        create_feature_groups()
 
     def test_basic_page(self):
         self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
@@ -328,6 +331,7 @@ class LeadModelTest(TestCase):
                 "leads.json", "staffing.json", "billing.json"]
 
     def setUp(self):
+        create_feature_groups()
         if not os.path.exists(pydici.settings.DOCUMENT_PROJECT_PATH):
             os.makedirs(pydici.settings.DOCUMENT_PROJECT_PATH)
 
@@ -576,3 +580,20 @@ def create_lead():
 
     lead.save()
     return lead
+
+
+def create_feature_groups():
+    group_names = (
+        "feature/leads",
+        "feature/mass_staffing",
+        "feature/3rdparties",
+        "feature/management",
+        "feature/reports",
+        "feature/search",
+    )
+    test_user = User.objects.get(username=TEST_USERNAME)
+    for name in group_names:
+        group = Group(name=name)
+        group.save()
+        test_user.groups.add(group)
+    test_user.save()
