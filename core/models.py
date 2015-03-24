@@ -10,7 +10,7 @@ features.
 To check if a user has access to a feature from Python code, use
 `utils.user_has_feature()` or the `decorator.pydici_feature()` decorator.
 
-To check for access from a template, use `{% if feature.<feature_name> %}`.
+To check for access from a template, use `{% if pydici_feature.<feature_name> %}`.
 """
 
 from django.contrib.auth.models import Group
