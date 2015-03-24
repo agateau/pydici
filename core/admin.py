@@ -31,7 +31,9 @@ class ReturnToAppAdmin(admin.ModelAdmin):
 
 
 class GroupFeatureAdmin(ReturnToAppAdmin):
-    pass
+    """Admin model for features assigned to groups"""
+    list_display = ("group", "feature")
+    ordering = ("group", "feature")
 
 
 admin.site.register(GroupFeature, GroupFeatureAdmin)
