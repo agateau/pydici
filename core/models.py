@@ -18,14 +18,17 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-FEATURES = sorted([
-    "leads",
-    "mass_staffing",
-    "3rdparties",
-    "management",
-    "reports",
-    "search",
-])
+_FEATURES_CHOICES = (
+    ("3rdparties", _("Access to the 'Third parties' menu")),
+    ("leads", _("Access to the 'Leads' menu")),
+    ("leads_list_all", _("Access to the 'Leads > All leads' menu entry")),
+    ("management", _("Access to the 'Management' menu")),
+    ("mass_staffing", _("Access to mass staffing features")),
+    ("reports", _("Access to the 'Reports' menu")),
+    ("search", _("Allow searching")),
+)
+
+FEATURES = set([x[0] for x in _FEATURES_CHOICES])
 
 
 class GroupFeature(models.Model):
@@ -34,7 +37,7 @@ class GroupFeature(models.Model):
     """
     group = models.ForeignKey(Group)
     feature = models.CharField(_("Feature"), max_length=80,
-                               choices=[(x, x) for x in FEATURES])
+                               choices=_FEATURES_CHOICES)
     class Meta:
         unique_together = (('group', 'feature'))
 
