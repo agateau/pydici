@@ -21,6 +21,7 @@ from django.template.defaultfilters import slugify
 from django.core.mail import EmailMultiAlternatives
 from django.core import urlresolvers
 from django.core.cache import cache
+from django.contrib.auth.models import Group
 
 import pydici.settings
 
@@ -365,3 +366,25 @@ class GEdges(list):
     """A list of CEdges that can be dumped in json"""
     def dump(self):
         return json.dumps([{"u": edge.source.id_, "v": edge.target.id_, "value": { "style": "stroke: %s;" % edge.color}} for edge in self])
+
+
+def _get_user_features(user):
+    """
+    Returns a set of strings representing the features accessible by the user.
+
+    Results are cached to reduce the number of SQL queries.
+    """
+    key = "core._get_user_features_" + user.username
+    res = cache.get(key)
+    if res is None:
+        group_names = [x.name for x in user.groups.filter(name__startswith="feature/")]
+        res = set([x.split("/")[1] for x in group_names])
+        cache.set(key, res, 3)
+    return res
+
+
+def user_has_feature(user, feature):
+    """
+    Returns True if `user` has access to `feature`.
+    """
+    return feature in _get_user_features(user)
