@@ -34,8 +34,9 @@ class GroupFeature(models.Model):
     """
     group = models.ForeignKey(Group)
     feature = models.CharField(_("Feature"), max_length=80,
-                               choices=[(x, x) for x in FEATURES],
-                               unique=True)
+                               choices=[(x, x) for x in FEATURES])
+    class Meta:
+        unique_together = (('group', 'feature'))
 
     def __unicode__(self):
         return unicode(self.group) + '-' + unicode(self.feature)
