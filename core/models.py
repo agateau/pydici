@@ -29,6 +29,8 @@ _FEATURES_CHOICES = (
     ("staffing_mass", _("Staffing, mass edit: Access to mass staffing features")),
     ("reports", _("Reports: Access to the 'Reports' menu")),
     ("search", _("Search: Allow searching")),
+    ("timesheet_all", _("Timesheet, all: Access to all timesheets of all users")),
+    ("timesheet_last_month", _("Timesheet, last month: Access to last month timesheets of all users")),
 )
 
 FEATURES = set([x[0] for x in _FEATURES_CHOICES])
