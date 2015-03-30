@@ -145,7 +145,7 @@ def consultant_staffing(request, consultant_id):
 
 
 @pydici_non_public
-@pydici_feature("mass_staffing")
+@pydici_feature("staffing_mass")
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @permission_required("staffing.change_staffing")
 def mass_staffing(request):
@@ -190,7 +190,7 @@ def mass_staffing(request):
 
 
 @pydici_non_public
-@pydici_feature("mass_staffing")
+@pydici_feature("staffing_mass")
 def pdc_review(request, year=None, month=None):
     """PDC overview
     @param year: start date year. None means current year
@@ -349,7 +349,7 @@ def pdc_review(request, year=None, month=None):
 
 
 @pydici_non_public
-@pydici_feature("mass_staffing")
+@pydici_feature("staffing_mass")
 @cache_page(10)
 def pdc_detail(request, consultant_id, staffing_date):
     """Display detail of consultant staffing for this month"""

@@ -26,7 +26,7 @@ _FEATURES_CHOICES = (
     ("leads_profitability", _("Leads, profitability: Access to the 'Profitability' information in lead description")),
     ("management", _("Management: Access to the 'Management' menu")),
     ("staffing", _("Staffing: Access to staffing features")),
-    ("mass_staffing", _("Staffing, mass edit: Access to mass staffing features")),
+    ("staffing_mass", _("Staffing, mass edit: Access to mass staffing features")),
     ("reports", _("Reports: Access to the 'Reports' menu")),
     ("search", _("Search: Allow searching")),
 )

@@ -30,7 +30,7 @@
 
         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Missions" %}<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-                {% if pydici_feature.mass_staffing %}
+                {% if pydici_feature.staffing_mass %}
                     <li><a href="{% url 'pdcreview-index' %}">{% trans "Workload schedule" %}</a></li>
                 {% endif %}
                 <li><a href="{% url 'missions' %}">{% trans "Active missions" %}</a></li>
@@ -42,7 +42,7 @@
                         {% if link %}<li>{{ link }}</li>{% endif %}
                     {% endwith %}
                 {% endif %}
-                {% if pydici_feature.mass_staffing %}
+                {% if pydici_feature.staffing_mass %}
                     <li><a href="{% url 'staffing.views.mass_staffing' %}">{% trans "Mass staffing" %}</a></li>
                 {% endif %}
             </ul>
