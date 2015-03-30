@@ -27,6 +27,7 @@ _FEATURES_CHOICES = (
     ("mass_staffing", _("Access to mass staffing features")),
     ("reports", _("Access to the 'Reports' menu")),
     ("search", _("Allow searching")),
+    ("contacts_write", _("Allow adding, editing, removing contacts")),
 )
 
 FEATURES = set([x[0] for x in _FEATURES_CHOICES])
