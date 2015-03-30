@@ -391,3 +391,8 @@ def user_has_feature(user, feature):
     Returns True if `user` has access to `feature`.
     """
     return feature in _get_user_features(user)
+
+
+def user_has_features(user, features):
+    features = set(features)
+    return features.issubset(_get_user_features(user))
