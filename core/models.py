@@ -26,10 +26,10 @@ _FEATURES_CHOICES = (
     ("leads_profitability", _("Leads, profitability: Access to the 'Profitability' information in lead description")),
     ("management", _("Management: Access to the 'Management' menu")),
     ("menubar", _("Menubar: Show the menubar")),
-    ("staffing", _("Staffing: Access to staffing features")),
-    ("staffing_mass", _("Staffing, mass edit: Access to mass staffing features")),
     ("reports", _("Reports: Access to the 'Reports' menu")),
     ("search", _("Search: Allow searching")),
+    ("staffing_mass", _("Staffing, mass edit: Access to mass staffing features")),
+    ("staffing", _("Staffing: Access to staffing features")),
     ("timesheet_all", _("Timesheet, all: Access to all timesheets of all users")),
     ("timesheet_last_month", _("Timesheet, last month: Access to last month timesheets of all users")),
 )
