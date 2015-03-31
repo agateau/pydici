@@ -8,7 +8,6 @@ class Migration(DataMigration):
 
     def _rename_feature(self, orm, src, dst):
         for obj in orm.GroupFeature.objects.all():
-            print(obj.group, obj.feature)
             if obj.feature == src:
                 obj.feature = dst
                 obj.save()
