@@ -81,6 +81,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
     "core.context_processors.feature",
+    "core.context_processors.menu",
 )
 
 MIDDLEWARE_CLASSES = [
