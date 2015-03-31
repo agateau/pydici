@@ -162,8 +162,3 @@ if DEBUG:
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 CRISPY_FAIL_SILENTLY = not DEBUG
 AUTO_RENDER_SELECT2_STATICS = False
-
-# INCWO_LOG_DIR must point to a dir where the `incwoimport` command can write.
-# It defaults to $PYDICI_PREFIX/incwo-log if not set.
-if not 'INCWO_LOG_DIR' in globals():
-    INCWO_LOG_DIR = os.path.join(PYDICI_PREFIX, 'incwo-log')
