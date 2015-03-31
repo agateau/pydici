@@ -61,7 +61,6 @@ def check_user_timesheet_access(user, consultant, timesheet_month):
     Returns one of the `TIMESHEET_ACCESS_*` constants.
     """
     current_month = date.today().replace(day=1)
-    previous_month = (current_month - timedelta(days=1)).replace(day=1)
 
     if (user.has_perm("staffing.add_timesheet") and
             user.has_perm("staffing.change_timesheet") and
@@ -91,8 +90,8 @@ def check_user_timesheet_access(user, consultant, timesheet_month):
     if user_has_feature(user, "timesheet_all"):
         return TIMESHEET_ACCESS_READ_ONLY
 
-    if user_has_feature(user, "timesheet_last_month"):
-        if timesheet_month >= previous_month:
+    if user_has_feature(user, "timesheet_current_month"):
+        if timesheet_month >= current_month:
             return TIMESHEET_ACCESS_READ_ONLY
         else:
             return TIMESHEET_ACCESS_NOT_ALLOWED
